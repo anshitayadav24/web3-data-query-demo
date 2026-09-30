@@ -184,6 +184,22 @@ app.get("/records", (req, res) => {
     records
   });
 });
+app.delete("/records/:id", (req, res) => {
+  const record = db
+    .prepare("SELECT * FROM records WHERE id = ?")
+    .get(req.params.id);
+
+  if (!record) {
+    return res.status(404).json({
+      error: "RECORD_NOT_FOUND",
+      message: "No record exists with the requested id."
+    });
+  }
+
+  db.prepare("DELETE FROM records WHERE id = ?").run(req.params.id);
+
+  res.status(204).send();
+});
 function formatRecord(record) {
   return {
     ...record,
