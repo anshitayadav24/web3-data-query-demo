@@ -68,7 +68,30 @@ app.post("/records", (req, res) => {
 
   res.status(201).json(formatRecord(record));
 });
+app.get("/records/:id", (req, res) => {
+  const record = db
+    .prepare("SELECT * FROM records WHERE id = ?")
+    .get(req.params.id);
 
+  if (!record) {
+    return res.status(404).json({
+      error: "RECORD_NOT_FOUND",
+      message: "No record exists with the requested id."
+    });
+  }
+
+  const formattedRecord = formatRecord(record);
+
+  if (formattedRecord.expired) {
+    return res.status(410).json({
+      error: "RECORD_EXPIRED",
+      message: "The requested record has expired.",
+      record: formattedRecord
+    });
+  }
+
+  res.json(formattedRecord);
+});
 function formatRecord(record) {
   return {
     ...record,
