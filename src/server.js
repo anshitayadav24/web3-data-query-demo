@@ -92,6 +92,98 @@ app.get("/records/:id", (req, res) => {
 
   res.json(formattedRecord);
 });
+app.get("/records", (req, res) => {
+  const validationError = validateQueryParams(req.query);
+
+  if (validationError) {
+    return res.status(400).json(validationError);
+  }
+
+  const {
+    owner_wallet,
+    namespace,
+    key,
+    tag,
+    expires_before,
+    expires_after,
+    include_expired
+  } = req.query;
+
+  const conditions = [];
+  const params = [];
+
+  if (owner_wallet) {
+    conditions.push("owner_wallet = ?");
+    params.push(owner_wallet);
+  }
+
+  if (namespace) {
+    conditions.push("namespace = ?");
+    params.push(namespace);
+  }
+
+  if (key) {
+    conditions.push("key = ?");
+    params.push(key);
+  }
+
+  if (expires_before) {
+    const date = new Date(expires_before);
+
+    if (Number.isNaN(date.getTime())) {
+      return res.status(400).json({
+        error: "INVALID_QUERY",
+        message: "expires_before must be a valid date."
+      });
+    }
+
+    conditions.push("expires_at IS NOT NULL AND expires_at < ?");
+    params.push(date.toISOString());
+  }
+
+  if (expires_after) {
+    const date = new Date(expires_after);
+
+    if (Number.isNaN(date.getTime())) {
+      return res.status(400).json({
+        error: "INVALID_QUERY",
+        message: "expires_after must be a valid date."
+      });
+    }
+
+    conditions.push("expires_at IS NOT NULL AND expires_at > ?");
+    params.push(date.toISOString());
+  }
+
+  if (include_expired !== "true") {
+    conditions.push("(expires_at IS NULL OR expires_at > ?)");
+    params.push(new Date().toISOString());
+  }
+
+  let sql = "SELECT * FROM records";
+
+  if (conditions.length > 0) {
+    sql += ` WHERE ${conditions.join(" AND ")}`;
+  }
+
+  sql += " ORDER BY created_at DESC";
+
+  let records = db
+    .prepare(sql)
+    .all(...params)
+    .map(formatRecord);
+
+  if (tag) {
+    records = records.filter((record) =>
+      record.tags.includes(tag)
+    );
+  }
+
+  res.json({
+    count: records.length,
+    records
+  });
+});
 function formatRecord(record) {
   return {
     ...record,
