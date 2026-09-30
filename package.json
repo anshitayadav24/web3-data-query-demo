@@ -1,0 +1,14 @@
+{
+  "name": "web3-data-query-demo",
+  "version": "1.0.0",
+  "description": "Developer-facing data query prototype with structured records, filtering, TTL/expiry, stable API errors, and developer experience.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "express": "^5.1.0"
+  }
+}
