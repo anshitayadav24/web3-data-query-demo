@@ -1,6 +1,7 @@
 const Database = require("better-sqlite3");
 
-const db = new Database("records.db");
+const databaseFile = process.env.DB_FILE || "records.db";
+const db = new Database(databaseFile);
 
 db.pragma("journal_mode = WAL");
 
