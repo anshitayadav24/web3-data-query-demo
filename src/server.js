@@ -10,13 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static("public"));
-app.get("/", (req, res) => {
-  res.json({
-    name: "web3-data-query-demo",
-    status: "ok",
-    message: "Developer-facing data query prototype is running."
-  });
-});
+
 
 app.post("/records", (req, res) => {
   const validationError = validateCreateRecord(req.body);
