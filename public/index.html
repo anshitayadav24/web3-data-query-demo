@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web3 Data Query Demo</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">Developer data layer prototype</p>
+      <h1>Web3 Data Query Demo</h1>
+      <p class="subtitle">
+        Create structured wallet-linked records, apply TTL, and query them using developer-friendly filters.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Create a record</h2>
+
+      <form id="create-form">
+        <label>
+          Owner wallet
+          <input
+            id="owner_wallet"
+            type="text"
+            placeholder="0x1111111111111111111111111111111111111111"
+            required
+          />
+        </label>
+
+        <label>
+          Namespace
+          <input
+            id="namespace"
+            type="text"
+            placeholder="profile"
+            required
+          />
+        </label>
+
+        <label>
+          Key
+          <input
+            id="key"
+            type="text"
+            placeholder="display_name"
+            required
+          />
+        </label>
+
+        <label>
+          Value
+          <input
+            id="value"
+            type="text"
+            placeholder="Alice"
+            required
+          />
+        </label>
+
+        <label>
+          Tags
+          <input
+            id="tags"
+            type="text"
+            placeholder="public, profile"
+          />
+        </label>
+
+        <label>
+          TTL in seconds
+          <input
+            id="ttl_seconds"
+            type="number"
+            min="1"
+            placeholder="3600"
+          />
+        </label>
+
+        <button type="submit">Create record</button>
+      </form>
+
+      <pre id="create-result">No request sent yet.</pre>
+    </section>
+
+    <section class="card">
+      <h2>Query records</h2>
+
+      <form id="query-form">
+        <label>
+          Owner wallet
+          <input
+            id="query_owner_wallet"
+            type="text"
+            placeholder="Optional"
+          />
+        </label>
+
+        <label>
+          Namespace
+          <input
+            id="query_namespace"
+            type="text"
+            placeholder="profile"
+          />
+        </label>
+
+        <label>
+          Key
+          <input
+            id="query_key"
+            type="text"
+            placeholder="display_name"
+          />
+        </label>
+
+        <label>
+          Tag
+          <input
+            id="query_tag"
+            type="text"
+            placeholder="verified"
+          />
+        </label>
+
+        <label class="checkbox-row">
+          <input id="include_expired" type="checkbox" />
+          Include expired records
+        </label>
+
+        <button type="submit">Run query</button>
+      </form>
+
+      <pre id="query-result">No query sent yet.</pre>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
